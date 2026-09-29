@@ -51,6 +51,9 @@
   width: 48px;
   image-rendering: pixelated;
   z-index: 500;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
 </style>
@@ -73,7 +76,10 @@
   const story = {
     start: {
       lines: ["Stop touching me.", "Hey! Knock it off.", "Please stop."],
-    }
+    },
+    fed: {
+    lines: ["*munch*", "Yummy."],
+  }
   };
 
   const img = document.getElementById("npc");
@@ -166,6 +172,42 @@ img.addEventListener("click", () => {
 });
 
 const APPLE_SIZE = 48;
+
+function feed() { goTo("fed"); }
+
+function makeDraggable(apple) {
+  let offX, offY;
+
+  apple.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    const r = apple.getBoundingClientRect();
+    offX = e.clientX - r.left;
+    offY = e.clientY - r.top;
+    apple.style.zIndex = 1200;          // float above Otto while dragging
+    apple.style.cursor = "grabbing";
+    apple.setPointerCapture(e.pointerId);
+  });
+
+  apple.addEventListener("pointermove", e => {
+    if (!apple.hasPointerCapture(e.pointerId)) return;
+    const x = e.clientX - offX, y = e.clientY - offY;
+    apple.style.left = Math.max(0, Math.min(x, window.innerWidth - APPLE_SIZE)) + "px";
+    apple.style.top  = Math.max(0, Math.min(y, window.innerHeight - APPLE_SIZE)) + "px";
+  });
+
+  apple.addEventListener("pointerup", () => {
+    apple.style.zIndex = "";
+    apple.style.cursor = "";
+    const a = apple.getBoundingClientRect();
+    const o = img.getBoundingClientRect();
+    const cx = a.left + a.width / 2, cy = a.top + a.height / 2;
+    if (cx > o.left && cx < o.right && cy > o.top && cy < o.bottom) {
+      apple.remove();
+      feed();
+    }
+  });
+}
+
 document.getElementById("spawn-apple").addEventListener("click", () => {
   const apple = document.createElement("img");
   apple.src = "sprites/apple.png";
@@ -174,6 +216,7 @@ document.getElementById("spawn-apple").addEventListener("click", () => {
   apple.style.left = Math.random() * (window.innerWidth - APPLE_SIZE) + "px";
   apple.style.top = Math.random() * (window.innerHeight - APPLE_SIZE) + "px";
   document.body.appendChild(apple);
+  makeDraggable(apple);
 });
 
 })();
