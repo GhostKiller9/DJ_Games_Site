@@ -22,7 +22,6 @@
     box-shadow: 4px 4px 0 #1c1c28;
     padding: 10px 14px;
     font: 24px/1.15 "VT323", "Courier New", monospace;
-    cursor: pointer;
     z-index: 1000;
   }
   #npc-choices { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
@@ -95,12 +94,6 @@
       });
     }
   }
-
-  box.addEventListener("click", () => {
-    if (typing) return finish();
-    if (idx < node.lines.length - 1) { idx++; showLine(); }
-    else if (!node.choices) goTo(node.next || null);
-  });
 
 let dragging = false, moved = false, startX, startY;
 img.addEventListener("pointerdown", e => {
