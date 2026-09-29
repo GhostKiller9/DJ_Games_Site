@@ -46,7 +46,7 @@
 
   const story = {
     start: {
-      lines: ["Stop touching me.", "Hey! Knock it off."],
+      lines: ["Stop touching me.", "Hey! Knock it off.", "Please stop."],
     }
   };
 
@@ -59,7 +59,7 @@
   let node, idx, typing = false, fullLine = "", typeT, mouthT;
 
 let hideT;
-const HIDE_AFTER = 10000; // 10 seconds
+const HIDE_AFTER = 5000; // 5 seconds
 
 function hide() {
   clearTimeout(hideT);
@@ -131,11 +131,12 @@ img.addEventListener("pointerup", () => {
 });
 
 img.addEventListener("click", () => {
-  if (moved) return;                       // ignore clicks that were really drags
+  if (moved) return;
   if (box.style.display !== "block") { goTo("start"); return; }
   resetHide();
-  if (typing) { finish(); return; }        // click while typing = show the full line
-  if (idx < node.lines.length - 1) { idx++; showLine(); }
+  if (typing) { finish(); return; }
+  idx = (idx + 1) % node.lines.length;   // after the last line, wraps back to 0
+  showLine();
 });
 })();
 </script>
