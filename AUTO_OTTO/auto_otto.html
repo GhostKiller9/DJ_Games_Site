@@ -2,8 +2,8 @@
 <style>
   #npc {
     position: fixed;
-    right: 220px;
-    bottom: 220px;
+    left: 50px;
+    bottom: 50px;
     height: 150px;
     cursor: pointer;
     image-rendering: pixelated;
@@ -13,8 +13,8 @@
   #npc-box {
     display: none;
     position: fixed;
-    right: 20px;
-    bottom: 150px;
+    left: 100px;
+    bottom: 100px;
     width: min(360px, calc(100vw - 40px));
     background: #f2e8cf;
     color: #1c1c28;
@@ -102,6 +102,26 @@
     if (idx < node.lines.length - 1) { idx++; showLine(); }
     else if (!node.choices) goTo(node.next || null);
   });
+
+let dragging = false, moved = false, startX, startY;
+img.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  dragging = true; moved = false;
+  startX = e.clientX; startY = e.clientY;
+  img.style.transition = "none";
+  img.setPointerCapture(e.pointerId);
+});
+img.addEventListener("pointermove", e => {
+  if (!dragging) return;
+  const dx = e.clientX - startX, dy = e.clientY - startY;
+  if (Math.abs(dx) + Math.abs(dy) > 5) moved = true;
+  img.style.transform = `translate(${dx}px, ${dy}px)`;
+});
+img.addEventListener("pointerup", () => {
+  dragging = false;
+  img.style.transition = "transform 0.6s ease-out";
+  img.style.transform = "";
+});
 
   img.addEventListener("click", () => {
     if (box.style.display !== "block") goTo("start");
