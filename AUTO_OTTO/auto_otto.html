@@ -9,7 +9,6 @@
     image-rendering: pixelated;
     z-index: 1000;
   }
-  #npc:hover { transform: translateY(-4px); }
   #npc-box {
     display: none;
     position: fixed;
@@ -60,12 +59,25 @@
 
   let node, idx, typing = false, fullLine = "", typeT, mouthT;
 
-  function goTo(id) {
-    if (!id) { box.style.display = "none"; return; }
-    node = story[id]; idx = 0;
-    box.style.display = "block";
-    showLine();
-  }
+let hideT;
+const HIDE_AFTER = 10000; // 10 seconds
+
+function hide() {
+  clearTimeout(hideT);
+  clearInterval(typeT); clearInterval(mouthT);
+  typing = false;
+  img.src = SPRITES[0];
+  box.style.display = "none";
+}
+
+function goTo(id) {
+  if (!id) { hide(); return; }
+  node = story[id]; idx = 0;
+  box.style.display = "block";
+  clearTimeout(hideT);
+  hideT = setTimeout(hide, HIDE_AFTER);
+  showLine();
+}
 
   function showLine() {
     choicesEl.innerHTML = "";
