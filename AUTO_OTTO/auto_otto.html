@@ -13,8 +13,8 @@
   #npc-box {
     display: none;
     position: fixed;
-    left: 100px;
-    bottom: 100px;
+    left: 250px;
+    bottom: 250px;
     width: min(360px, calc(100vw - 40px));
     background: #f2e8cf;
     color: #1c1c28;
@@ -43,14 +43,13 @@
 
 <script>
 (() => {
-  const SPRITES = ["sprites/otto_reg.png", "sprites/otto_openmouth.png"]; // closed, open
+  const SPRITES = ["sprites/otto_reg.png", "sprites/otto_openmouth.png"];
   const TALK_SPEED = 30, MOUTH_SPEED = 120;
 
-  // Edit the conversation here
   const story = {
     start: {
-      lines: ["Oh, hey! Welcome.", "I'll have more to say soon."],
-      choices: [{ text: "Bye", go: null }]
+      lines: ["Stop touching me.", "Hey! Knock it off."],
+      choices: [{ text: "Ok", go: null }]
     }
   };
 
