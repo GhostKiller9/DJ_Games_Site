@@ -4,15 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Games or No Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>WELCOME! 🎮</h1>
-  <p>This is a secret videogame site.</p>
+  <header class="hero">
+    <h1>Games or No Games 🎮</h1>
+    <p>A secret videogame site. Don't tell anyone.</p>
+  </header>
 
-<a href="AUTO_OTTO/auto_otto.html" class="game-link">
-  <img src="AUTO_OTTO/sprites/otto_reg.png" alt="" width="64">
-  <span>CLICK HERE</span>
-</a>
+  <main class="grid">
+    <a href="AUTO_OTTO/auto_otto.html" class="game-link">
+      <span class="thumb"><img src="AUTO_OTTO/sprites/otto_reg.png" alt="" width="64" height="64"></span>
+      <span class="name">Auto Otto</span>
+      <span class="play">Play</span>
+    </a>
+
+    <div class="game-link locked" aria-label="Next game coming soon">
+      <span class="thumb">?</span>
+      <span class="name">Next game</span>
+      <span class="play">Coming soon</span>
+    </div>
+
+    <div class="game-link locked" aria-label="Another game coming soon">
+      <span class="thumb">?</span>
+      <span class="name">Another game</span>
+      <span class="play">Coming soon</span>
+    </div>
+  </main>
+
+  <footer>Made for fun. More games soon.</footer>
 </body>
 </html>
