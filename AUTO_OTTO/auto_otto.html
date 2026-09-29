@@ -56,6 +56,21 @@
   user-select: none;
 }
 
+#apple-count {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1500;
+  font: 26px "VT323", "Courier New", monospace;
+  background: #f2e8cf;
+  color: #1c1c28;
+  border: 4px solid #1c1c28;
+  box-shadow: 4px 4px 0 #1c1c28;
+  padding: 2px 14px;
+  pointer-events: none;
+}
+
 </style>
 
 <img id="npc" src="sprites/otto_reg.png" alt="Talk to the character">
@@ -67,6 +82,8 @@
 <a href="../" style="position:absolute;top:8px;left:10px;color:#000000;font-size:22px;">◂ Back</a>
 
 <button id="spawn-apple">Spawn apple</button>
+<div id="apple-count" hidden>Apples eaten: <span id="apple-num">0</span></div>
+
 
 <script>
 (() => {
@@ -173,7 +190,16 @@ img.addEventListener("click", () => {
 
 const APPLE_SIZE = 48;
 
-function feed() { goTo("fed"); }
+let applesEaten = 0;
+const countEl = document.getElementById("apple-count");
+const countNum = document.getElementById("apple-num");
+
+function feed() {
+  applesEaten++;
+  countNum.textContent = applesEaten;
+  countEl.hidden = false;   // shows on the first apple, stays visible after
+  goTo("fed");
+}
 
 function makeDraggable(apple) {
   let offX, offY;
