@@ -1,0 +1,110 @@
+<!-- Paste this just before </body> in your index.html -->
+
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+  #npc {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    height: 120px;
+    cursor: pointer;
+    image-rendering: pixelated;
+    z-index: 1000;
+  }
+  #npc:hover { transform: translateY(-4px); }
+  #npc-box {
+    display: none;
+    position: fixed;
+    right: 20px;
+    bottom: 150px;
+    width: min(360px, calc(100vw - 40px));
+    background: #f2e8cf;
+    color: #1c1c28;
+    border: 4px solid #1c1c28;
+    box-shadow: 4px 4px 0 #1c1c28;
+    padding: 10px 14px;
+    font: 24px/1.15 "VT323", "Courier New", monospace;
+    cursor: pointer;
+    z-index: 1000;
+  }
+  #npc-choices { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  #npc-choices button {
+    font: inherit; background: #1c1c28; color: #f2e8cf;
+    border: none; padding: 2px 10px; cursor: pointer;
+  }
+  #npc-choices button:hover { background: #e0a526; color: #1c1c28; }
+</style>
+
+<img id="npc" src="sprite1.png" alt="Talk to the character">
+<div id="npc-box">
+  <div id="npc-text"></div>
+  <div id="npc-choices"></div>
+</div>
+
+<script>
+(() => {
+  const SPRITES = ["otto_reg.png", "otto_openmouth.png"]; // closed, open
+  const TALK_SPEED = 30, MOUTH_SPEED = 120;
+
+  // Edit the conversation here
+  const story = {
+    start: {
+      lines: ["Oh, hey! Welcome.", "I'll have more to say soon."],
+      choices: [{ text: "Bye", go: null }]
+    }
+  };
+
+  const img = document.getElementById("npc");
+  const box = document.getElementById("npc-box");
+  const textEl = document.getElementById("npc-text");
+  const choicesEl = document.getElementById("npc-choices");
+  SPRITES.forEach(s => { new Image().src = s; });
+
+  let node, idx, typing = false, fullLine = "", typeT, mouthT;
+
+  function goTo(id) {
+    if (!id) { box.style.display = "none"; return; }
+    node = story[id]; idx = 0;
+    box.style.display = "block";
+    showLine();
+  }
+
+  function showLine() {
+    choicesEl.innerHTML = "";
+    fullLine = node.lines[idx];
+    textEl.textContent = "";
+    typing = true;
+    let i = 0, f = 0;
+    mouthT = setInterval(() => { img.src = SPRITES[++f % 2]; }, MOUTH_SPEED);
+    typeT = setInterval(() => {
+      textEl.textContent += fullLine[i++];
+      if (i >= fullLine.length) finish();
+    }, TALK_SPEED);
+  }
+
+  function finish() {
+    clearInterval(typeT); clearInterval(mouthT);
+    img.src = SPRITES[0];
+    textEl.textContent = fullLine;
+    typing = false;
+    if (idx === node.lines.length - 1 && node.choices) {
+      node.choices.forEach(c => {
+        const b = document.createElement("button");
+        b.textContent = c.text;
+        b.onclick = e => { e.stopPropagation(); goTo(c.go); };
+        choicesEl.appendChild(b);
+      });
+    }
+  }
+
+  box.addEventListener("click", () => {
+    if (typing) return finish();
+    if (idx < node.lines.length - 1) { idx++; showLine(); }
+    else if (!node.choices) goTo(node.next || null);
+  });
+
+  img.addEventListener("click", () => {
+    if (box.style.display !== "block") goTo("start");
+  });
+})();
+</script>
