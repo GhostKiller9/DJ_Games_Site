@@ -70,12 +70,16 @@ function hide() {
   box.style.display = "none";
 }
 
+function resetHide() {
+  clearTimeout(hideT);
+  hideT = setTimeout(hide, HIDE_AFTER);
+}
+
 function goTo(id) {
   if (!id) { hide(); return; }
   node = story[id]; idx = 0;
   box.style.display = "block";
-  clearTimeout(hideT);
-  hideT = setTimeout(hide, HIDE_AFTER);
+  resetHide();
   showLine();
 }
 
@@ -127,8 +131,12 @@ img.addEventListener("pointerup", () => {
   img.style.transform = "";
 });
 
-  img.addEventListener("click", () => {
-    if (box.style.display !== "block") goTo("start");
-  });
+img.addEventListener("click", () => {
+  if (moved) return;                       // ignore clicks that were really drags
+  if (box.style.display !== "block") { goTo("start"); return; }
+  resetHide();
+  if (typing) { finish(); return; }        // click while typing = show the full line
+  if (idx < node.lines.length - 1) { idx++; showLine(); }
+});
 })();
 </script>
