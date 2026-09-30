@@ -4,6 +4,7 @@
   const TALK_SPEED = 30, MOUTH_SPEED = 120;
   const HIDE_AFTER = 5000;   // text box disappears after 5 seconds
   const APPLE_SIZE = 48;
+  const SHOP_UNLOCK = 10;   // apples needed to unlock the shop
 
   // ---------- Dialogue ----------
   const story = {
@@ -23,6 +24,8 @@
   const countEl = document.getElementById("apple-count");
   const countNum = document.getElementById("apple-num");
   SPRITES.forEach(s => { new Image().src = s; });
+  const shop = document.getElementById("shop");
+  const shopToggle = document.getElementById("shop-toggle");
 
   // ---------- Text box ----------
   let node, idx, typing = false, fullLine = "", typeT, mouthT, hideT;
@@ -137,12 +140,29 @@
   // ---------- Apples ----------
   let applesEaten = 0;
 
-  function feed() {
-    applesEaten++;
-    countNum.textContent = applesEaten;
-    countEl.hidden = false;                  // shows on the first apple, stays visible after
-    goTo("fed");
-  }
+function feed() {
+  applesEaten++;
+  countNum.textContent = applesEaten;
+  countEl.hidden = false;
+  if (applesEaten === SHOP_UNLOCK) unlockShop();
+  goTo("fed");
+}
+
+function unlockShop() {
+  shop.hidden = false;
+  void shop.offsetWidth;            // forces a reflow so the slide-in animates
+  shop.classList.remove("closed");  // slides in open
+  shopToggle.textContent = "◂";
+  shopToggle.setAttribute("aria-expanded", "true");
+  shopToggle.setAttribute("aria-label", "Close shop");
+}
+
+shopToggle.addEventListener("click", () => {
+  const closed = shop.classList.toggle("closed");
+  shopToggle.textContent = closed ? "▸" : "◂";
+  shopToggle.setAttribute("aria-expanded", String(!closed));
+  shopToggle.setAttribute("aria-label", closed ? "Open shop" : "Close shop");
+});
 
   function makeDraggable(apple) {
     let offX, offY;
