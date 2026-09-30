@@ -134,7 +134,7 @@ function resetHide() {
 function positionBox() {
   const o = img.getBoundingClientRect();
   const bw = box.offsetWidth;
-  box.style.left = Math.max(10, Math.min(o.left + o.width * 0.6, window.innerWidth - bw - 10)) + "px";
+  box.style.left = Math.max(10, Math.min(o.left + o.width / 2 - bw / 2, window.innerWidth - bw - 10)) + "px";
   if (o.top < 200) {                       // Otto near the top: put the box below him
     box.style.top = o.bottom + 8 + "px";
     box.style.bottom = "auto";
