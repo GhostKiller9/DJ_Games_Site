@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = "v 0.05";
+  const VERSION = "v 0.06";
   const el = document.createElement("div");
   el.textContent = VERSION;
   el.style.cssText = [
