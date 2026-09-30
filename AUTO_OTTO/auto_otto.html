@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Otto</title>
+</head>
+<body>
+
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 <style>
   #npc {
@@ -8,12 +17,11 @@
     cursor: pointer;
     image-rendering: pixelated;
     z-index: 1000;
+    touch-action: none;
   }
   #npc-box {
     display: none;
     position: fixed;
-    left: 250px;
-    bottom: 250px;
     width: min(360px, calc(100vw - 40px));
     background: #f2e8cf;
     color: #1c1c28;
@@ -123,16 +131,31 @@ function resetHide() {
   hideT = setTimeout(hide, HIDE_AFTER);
 }
 
+function positionBox() {
+  const o = img.getBoundingClientRect();
+  const bw = box.offsetWidth;
+  box.style.left = Math.max(10, Math.min(o.left + o.width * 0.6, window.innerWidth - bw - 10)) + "px";
+  if (o.top < 200) {                       // Otto near the top: put the box below him
+    box.style.top = o.bottom + 8 + "px";
+    box.style.bottom = "auto";
+  } else {                                 // otherwise above his head
+    box.style.bottom = window.innerHeight - o.top + 8 + "px";
+    box.style.top = "auto";
+  }
+}
+
 function goTo(id) {
   if (!id) { hide(); return; }
   node = story[id]; idx = 0;
   box.style.display = "block";
+  positionBox();
   resetHide();
   showLine();
 }
 
-  function showLine() {
-    choicesEl.innerHTML = "";
+function showLine() {
+  clearInterval(typeT); clearInterval(mouthT);   // new: safe to interrupt a line mid-typing
+  choicesEl.innerHTML = "";
     fullLine = node.lines[idx];
     textEl.textContent = "";
     typing = true;
@@ -159,33 +182,47 @@ function goTo(id) {
     }
   }
 
-let dragging = false, moved = false, startX, startY;
+// Each poke = say the next "don't touch me" line (and loop)
+function poke() {
+  if (box.style.display !== "block" || node !== story.start) { goTo("start"); return; }
+  resetHide();
+  idx = (idx + 1) % node.lines.length;
+  showLine();
+}
+
+let dragging = false, moved = false, startX, startY, offX, offY;
+
 img.addEventListener("pointerdown", e => {
   e.preventDefault();
   dragging = true; moved = false;
   startX = e.clientX; startY = e.clientY;
-  img.style.transition = "none";
+  const r = img.getBoundingClientRect();
+  offX = e.clientX - r.left;
+  offY = e.clientY - r.top;
   img.setPointerCapture(e.pointerId);
 });
+
 img.addEventListener("pointermove", e => {
   if (!dragging) return;
-  const dx = e.clientX - startX, dy = e.clientY - startY;
-  if (Math.abs(dx) + Math.abs(dy) > 5) moved = true;
-  img.style.transform = `translate(${dx}px, ${dy}px)`;
-});
-img.addEventListener("pointerup", () => {
-  dragging = false;
-  img.style.transition = "transform 0.6s ease-out";
-  img.style.transform = "";
+  if (!moved && Math.abs(e.clientX - startX) + Math.abs(e.clientY - startY) > 5) {
+    moved = true;
+    poke();                                  // he complains once when a drag starts
+       if (box.style.display === "block") { positionBox(); resetHide(); }
+  }
+  if (!moved) return;
+  const x = Math.max(0, Math.min(e.clientX - offX, window.innerWidth - img.offsetWidth));
+  const y = Math.max(0, Math.min(e.clientY - offY, window.innerHeight - img.offsetHeight));
+  img.style.left = x + "px";
+  img.style.top = y + "px";
+  img.style.bottom = "auto";
+  if (box.style.display === "block") positionBox();   // box follows him
 });
 
+img.addEventListener("pointerup", () => { dragging = false; });
+
 img.addEventListener("click", () => {
-  if (moved) return;
-  if (box.style.display !== "block") { goTo("start"); return; }
-  resetHide();
-  if (typing) { finish(); return; }
-  idx = (idx + 1) % node.lines.length;   // after the last line, wraps back to 0
-  showLine();
+  if (moved) return;                         // a drag isn't also a click
+  poke();
 });
 
 const APPLE_SIZE = 48;
@@ -249,3 +286,6 @@ document.getElementById("spawn-apple").addEventListener("click", () => {
 </script>
 
 <script src="../version.js"></script>
+
+</body>
+</html>
