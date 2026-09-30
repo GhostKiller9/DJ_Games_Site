@@ -18,11 +18,15 @@
 </div>
 
 <button id="spawn-apple">Spawn apple</button>
-<div id="apple-count" hidden>Apples eaten: <span id="apple-num">0</span></div>
+<div id="apple-count" hidden>Apples: <span id="apple-num">0</span></div>
 
 <aside id="shop" class="closed" hidden>
   <div id="shop-panel">
     <h2>Shop</h2>
+    <button id="buy-tree" class="shop-item" disabled>
+  <img src="sprites/tree.png" alt="">
+  <span>Apple tree<small id="tree-price">30 apples</small></span>
+</button>
   </div>
   <button id="shop-toggle" aria-expanded="false" aria-label="Open shop">▸</button>
 </aside>

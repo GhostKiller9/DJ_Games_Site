@@ -12,7 +12,7 @@
   position: fixed;
   left: 50px;
   bottom: 50px;
-  height: 150px;
+  height: 160px;
   cursor: pointer;
   image-rendering: pixelated;
   z-index: 1000;
@@ -125,3 +125,33 @@
   cursor: pointer;
 }
 #shop-toggle:hover { background: #e0a526; }
+
+/* ---------- Shop item + tree ---------- */
+.shop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  background: #f2e8cf;
+  color: #1c1c28;
+  border: 3px solid #1c1c28;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.shop-item:hover:not(:disabled) { background: #e0a526; }
+.shop-item:disabled { opacity: 0.55; cursor: not-allowed; }
+.shop-item img { width: 48px; height: 48px; object-fit: contain; image-rendering: pixelated; }
+.shop-item small { display: block; font-size: 20px; }
+
+#tree {
+  position: fixed;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);   /* middle right of the screen */
+  height: 320px;                 /* adjust to fit your sprite */
+  image-rendering: pixelated;
+  z-index: 400;                  /* below apples (500) and Otto (1000) */
+  pointer-events: none;
+}

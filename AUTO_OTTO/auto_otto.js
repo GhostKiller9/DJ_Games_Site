@@ -5,6 +5,8 @@
   const HIDE_AFTER = 5000;   // text box disappears after 5 seconds
   const APPLE_SIZE = 48;
   const SHOP_UNLOCK = 10;   // apples needed to unlock the shop
+  const TREE_COST = 30;
+  const TREE_INTERVAL = 10000;   // an apple every 10 seconds
 
   // ---------- Dialogue ----------
   const story = {
@@ -26,6 +28,8 @@
   SPRITES.forEach(s => { new Image().src = s; });
   const shop = document.getElementById("shop");
   const shopToggle = document.getElementById("shop-toggle");
+  const buyBtn = document.getElementById("buy-tree");
+  const treePrice = document.getElementById("tree-price");
 
   // ---------- Text box ----------
   let node, idx, typing = false, fullLine = "", typeT, mouthT, hideT;
@@ -144,7 +148,8 @@ function feed() {
   applesEaten++;
   countNum.textContent = applesEaten;
   countEl.hidden = false;
-  if (applesEaten === SHOP_UNLOCK) unlockShop();
+  if (shop.hidden && applesEaten >= SHOP_UNLOCK) unlockShop();
+  updateShop();
   goTo("fed");
 }
 
@@ -197,14 +202,55 @@ shopToggle.addEventListener("click", () => {
     });
   }
 
-  document.getElementById("spawn-apple").addEventListener("click", () => {
-    const apple = document.createElement("img");
-    apple.src = "sprites/apple.png";
-    apple.alt = "";
-    apple.className = "apple";
-    apple.style.left = Math.random() * (window.innerWidth - APPLE_SIZE) + "px";
-    apple.style.top = Math.random() * (window.innerHeight - APPLE_SIZE) + "px";
-    document.body.appendChild(apple);
-    makeDraggable(apple);
-  });
+function spawnApple(x, y) {
+  const apple = document.createElement("img");
+  apple.src = "sprites/apple.png";
+  apple.alt = "";
+  apple.className = "apple";
+  apple.style.left = Math.max(0, Math.min(x, window.innerWidth - APPLE_SIZE)) + "px";
+  apple.style.top = Math.max(0, Math.min(y, window.innerHeight - APPLE_SIZE)) + "px";
+  document.body.appendChild(apple);
+  makeDraggable(apple);
+}
+
+document.getElementById("spawn-apple").addEventListener("click", () => {
+  spawnApple(
+    Math.random() * (window.innerWidth - APPLE_SIZE),
+    Math.random() * (window.innerHeight - APPLE_SIZE)
+  );
+});
+
+// ---------- Apple tree ----------
+let treeOwned = false, tree;
+
+function updateShop() {
+  if (treeOwned) {
+    buyBtn.disabled = true;
+    treePrice.textContent = "Owned";
+  } else {
+    buyBtn.disabled = applesEaten < TREE_COST;
+  }
+}
+
+function dropAppleFromTree() {
+  const t = tree.getBoundingClientRect();
+  const x = t.left - 20 + Math.random() * (t.width + 40 - APPLE_SIZE);   // a bit wider than the tree
+  const y = t.bottom - 36 + Math.random() * 40;                          // around the base
+  spawnApple(x, y);
+}
+
+buyBtn.addEventListener("click", () => {
+  if (treeOwned || applesEaten < TREE_COST) return;
+  applesEaten -= TREE_COST;          // delete this line to make 30 a milestone instead of a cost
+  countNum.textContent = applesEaten;
+  treeOwned = true;
+  tree = document.createElement("img");
+  tree.id = "tree";
+  tree.src = "sprites/tree.png";
+  tree.alt = "";
+  document.body.appendChild(tree);
+  setInterval(dropAppleFromTree, TREE_INTERVAL);
+  updateShop();
+});
+
 })();
