@@ -6,16 +6,16 @@
   const APPLE_SIZE = 48;
   const SHOP_UNLOCK = 10;   // apples needed to unlock the shop
   const TREE_COST = 30;
-  const TREE_INTERVAL = 10000;   // an apple every 10 seconds
+  const TREE_INTERVAL = 20000;   // an apple every 10 seconds
   const SQUIRREL_COST = 100;
-  const SQUIRREL_SPEED = 90;      // pixels per second ("slowly")
-  const STASH_RADIUS = 70;        // apples this close to the X count as already stashed
+  const SQUIRREL_SPEED = 75;      // pixels per second ("slowly")
+  const STASH_RADIUS = 60;        // apples this close to the X count as already stashed
   const SQUIRREL_FRAMES = ["sprites/squirrel_1.png", "sprites/squirrel_2.png"];
 
   // ---------- Dialogue ----------
   const story = {
     start: {
-      lines: ["Stop touching me.", "Hey! Knock it off.", "Please stop."],
+      lines: ["Stop touching me.", "Hey! Knock it off.", "Please stop.", "Do not touch me.", "Quit it!"],
     },
     fed: {
       lines: ["*munch*", "Yummy."],
@@ -37,6 +37,8 @@
   SQUIRREL_FRAMES.forEach(s => { new Image().src = s; });
   const buySquirrelBtn = document.getElementById("buy-squirrel");
   const squirrelPrice = document.getElementById("squirrel-price");
+  const buySquirrelSpeedBtn = document.getElementById("buy-squirrel_speed");
+  const squirrelSpeedPrice = document.getElementById("squirrel_speed-price");
   const setBtn = document.getElementById("set-squirrel");
   const stashX = document.getElementById("stash-x");
   const overlay = document.getElementById("place-overlay");
@@ -251,6 +253,10 @@ function updateShop() {
   if (squirrelOwned) {
     buySquirrelBtn.disabled = true;
     squirrelPrice.textContent = "Owned";
+  }if (squirrelspeedOwned) {
+    buySquirrelSpeedBtn.disabled = true;
+    squirrelSpeedPrice.textContent = "Owned";
+    SQUIRREL_SPEED = 150;
   } else {
     buySquirrelBtn.disabled = applesEaten < SQUIRREL_COST;
   }
