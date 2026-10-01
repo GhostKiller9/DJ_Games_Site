@@ -7,6 +7,13 @@
   font-size: 22px;
 }
 
+body {
+  background-image: url("sprites/background.png");
+  background-repeat: repeat;
+  background-size: 320px 320px;    /* size of each tile on screen */
+  image-rendering: pixelated;      /* keeps the pixel art crisp when scaled up */
+}
+
 /* ---------- Otto ---------- */
 #npc {
   position: fixed;
