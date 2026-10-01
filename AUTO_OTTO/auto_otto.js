@@ -11,6 +11,7 @@
   const SQUIRREL_SPEED = 75;      // pixels per second ("slowly")
   const STASH_RADIUS = 60;        // apples this close to the X count as already stashed
   const SQUIRREL_FRAMES = ["sprites/squirrel_1.png", "sprites/squirrel_2.png"];
+  const SQUIRREL_SPEED_COST = 150;
 
   // ---------- Dialogue ----------
   const story = {
@@ -256,7 +257,6 @@ function updateShop() {
   }if (squirrelspeedOwned) {
     buySquirrelSpeedBtn.disabled = true;
     squirrelSpeedPrice.textContent = "Owned";
-    SQUIRREL_SPEED = 150;
   } else {
     buySquirrelBtn.disabled = applesEaten < SQUIRREL_COST;
   }
@@ -419,6 +419,15 @@ buySquirrelBtn.addEventListener("click", () => {
   startPlacing();                      // pick the drop spot right away
   lastT = performance.now();
   requestAnimationFrame(tick);
+});
+
+buySquirrelSpeedBtn.addEventListener("click", () => {
+  if (squirrelspeedOwned || applesEaten < SQUIRREL_SPEED_COST) return;
+  applesEaten -= SQUIRREL_SPEED_COST;
+  countNum.textContent = applesEaten;
+  squirrelspeedOwned = true;
+  SQUIRREL_SPEED = 150;
+  updateShop();
 });
 
 // ---------- Dev mode (only active at auto_otto.html?dev) ----------
