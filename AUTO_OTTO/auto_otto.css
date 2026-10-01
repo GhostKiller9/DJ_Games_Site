@@ -44,7 +44,7 @@
 #npc-choices button:hover { background: #e0a526; color: #1c1c28; }
 
 /* ---------- Apples ---------- */
-#spawn-apple {
+#spawn-apple , #set-squirrel {
   position: fixed;
   top: 8px;
   right: 10px;
