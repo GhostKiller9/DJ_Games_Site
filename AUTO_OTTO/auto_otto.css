@@ -57,8 +57,9 @@
   padding: 2px 12px;
   cursor: pointer;
 }
-#spawn-apple:hover { background: #e0a526; }
-#spawn-apple:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #1c1c28; }
+
+#spawn-apple:hover, #set-squirrel:hover { background: #e0a526; }
+#spawn-apple:active, #set-squirrel:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #1c1c28; }
 
 .apple {
   position: fixed;
@@ -153,5 +154,50 @@
   height: 320px;                 /* adjust to fit your sprite */
   image-rendering: pixelated;
   z-index: 400;                  /* below apples (500) and Otto (1000) */
+  pointer-events: none;
+}
+
+/* ---------- Squirrel ---------- */
+#set-squirrel { top: 56px; }                    /* sits under the Spawn apple button */
+
+.shop-item + .shop-item { margin-top: 8px; }
+
+#squirrel {
+  position: fixed;
+  height: 96px;                                 /* adjust to your sprite (3x if it's 32px) */
+  image-rendering: pixelated;
+  z-index: 600;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+.apple.carried { z-index: 700; pointer-events: none; }
+
+#stash-x {
+  position: fixed;
+  width: 48px;
+  transform: translate(-50%, -50%);
+  image-rendering: pixelated;
+  z-index: 300;
+  pointer-events: none;
+}
+
+#place-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  cursor: crosshair;
+  background: rgba(26, 26, 46, 0.15);
+}
+#place-overlay span {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  font: 26px "VT323", "Courier New", monospace;
+  background: #f2e8cf;
+  color: #1c1c28;
+  border: 4px solid #1c1c28;
+  box-shadow: 4px 4px 0 #1c1c28;
+  padding: 2px 14px;
   pointer-events: none;
 }
