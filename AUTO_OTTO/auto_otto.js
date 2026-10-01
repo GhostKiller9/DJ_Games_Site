@@ -154,12 +154,16 @@
   // ---------- Apples ----------
   let applesEaten = 0;
 
-function feed() {
-  applesEaten++;
+function addApples(n) {
+  applesEaten += n;
   countNum.textContent = applesEaten;
   countEl.hidden = false;
   if (shop.hidden && applesEaten >= SHOP_UNLOCK) unlockShop();
   updateShop();
+}
+
+function feed() {
+  addApples(1);
   goTo("fed");
 }
 
@@ -410,5 +414,14 @@ buySquirrelBtn.addEventListener("click", () => {
   lastT = performance.now();
   requestAnimationFrame(tick);
 });
+
+// ---------- Dev mode (only active at auto_otto.html?dev) ----------
+if (new URLSearchParams(window.location.search).has("dev")) {
+  window.addApples = addApples;                 // also usable from the console: addApples(500)
+  document.addEventListener("keydown", e => {
+    if (e.key === "]") addApples(10);           // ]  = +10 apples
+    if (e.key === "}") addApples(100);          // Shift+]  = +100 apples
+  });
+}
 
 })();
